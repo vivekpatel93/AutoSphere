@@ -1,9 +1,6 @@
 package com.vivek.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +23,7 @@ public class Car {
     private double price;
     private int seatCapacity;
     private float mileage;
-
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User owner;
 }
