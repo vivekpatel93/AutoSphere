@@ -2,9 +2,13 @@ package com.vivek.service.impl;
 
 import com.vivek.dto.CarRequestDTO;
 import com.vivek.dto.CarResponseDTO;
+import com.vivek.dto.OwnerDTO;
+import com.vivek.dto.UserRegistrationDTO;
 import com.vivek.entity.Car;
+import com.vivek.entity.User;
 import com.vivek.exception.ResourceNotFoundException;
 import com.vivek.repository.CarRepository;
+import com.vivek.repository.UserRepository;
 import com.vivek.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +22,8 @@ import java.util.List;
 public class CarServiceImplementation implements CarService {
     @Autowired
     private CarRepository carRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     // convert Entity to Response DTO
     private CarResponseDTO mapToResponseDTO(Car car){
         CarResponseDTO dto=new CarResponseDTO();
@@ -31,6 +36,11 @@ public class CarServiceImplementation implements CarService {
         dto.setMileage(car.getMileage());
         dto.setSeatCapacity(car.getSeatCapacity());
         dto.setPrice(car.getPrice());
+        if (car.getOwner() != null) {
+            OwnerDTO ownerDTO = new OwnerDTO();
+            ownerDTO.setUserId(car.getOwner().getUserId());
+            dto.setOwner(ownerDTO);
+        }
         return dto;
     }
 
@@ -60,7 +70,9 @@ public class CarServiceImplementation implements CarService {
 
     @Override
     public CarResponseDTO update(String vinNumber,CarRequestDTO dto){
-        CarResponseDTO c=mapToResponseDTO(carRepository.findById(vinNumber).orElseThrow(()->new ResourceNotFoundException("Car with given vINumber not found!, Sorry unable to update.")));
+
+        Car c=carRepository.findById(vinNumber)
+                .orElseThrow(()->new ResourceNotFoundException("Car with given vINumber not found!, Sorry unable to update."));
         c.setCompanyName(dto.getCompanyName());
         c.setCarType(dto.getCarType());
         c.setModel(dto.getModel());
@@ -69,7 +81,16 @@ public class CarServiceImplementation implements CarService {
         c.setSeatCapacity(dto.getSeatCapacity());
         c.setMileage(dto.getMileage());
 
-        return c;
+        // --- update relation (IMPORTANT) ---
+        if (dto.getOwner() != null && dto.getOwner().getUserId() != null) {
+
+            User user = userRepository.findById(dto.getOwner().getUserId())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+            c.setOwner(user);
+        }
+        Car car=carRepository.save(c);
+        return mapToResponseDTO(car);
     }
     @Override
     public CarResponseDTO findByVINumber(String vinNumber){

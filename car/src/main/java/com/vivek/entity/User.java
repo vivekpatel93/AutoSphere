@@ -33,8 +33,8 @@ public class User {
 
     private String city;
 
-    @Size(min = 4,max =4,message = "Invalid pin code.")
-    private int pinCode;
+    @Size(min = 6,max =6,message = "Invalid pin code.")
+    private String pinCode;
 
     private String houseNo;
 

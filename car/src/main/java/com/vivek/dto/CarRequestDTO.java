@@ -16,4 +16,5 @@ public class CarRequestDTO {
     private double price;
     private int seatCapacity;
     private float mileage;
+    private OwnerDTO owner;
 }

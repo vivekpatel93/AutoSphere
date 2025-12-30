@@ -1,11 +1,9 @@
 package com.vivek.dto;
 
-import com.vivek.entity.Car;
+import lombok.Data;
 
-import java.util.List;
-
-public class UserRequestDTO {
-    private int userId;
+@Data
+public class UserRegistrationDTO {
     private String name;
     private String email;
     private String password;

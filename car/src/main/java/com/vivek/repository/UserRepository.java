@@ -8,10 +8,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
 
-    List<User> findByCity(User user);
+    List<User> findByCity(String city);
 
-    List<User> findByPinCode(int pinCode);
+    List<User> findByPinCode(String pinCode);
 
-    List<User> findByCarModel(String model);
 
 }
