@@ -25,5 +25,5 @@ public class Car {
     private float mileage;
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User owner;
+    private CarUser owner;
 }

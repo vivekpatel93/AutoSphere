@@ -2,6 +2,7 @@ package com.vivek.service;
 
 import com.vivek.dto.CarRequestDTO;
 import com.vivek.dto.CarResponseDTO;
+import com.vivek.dto.PurchaseResponseDTO;
 import com.vivek.entity.Car;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface CarService {
     List<CarResponseDTO> findByMileageAbove20(float mileage);
     List<CarResponseDTO> findByColor(String color);
     void delete(String vinNumber);
+    // purchase car
+    PurchaseResponseDTO purchaseCar(String vin);
 }

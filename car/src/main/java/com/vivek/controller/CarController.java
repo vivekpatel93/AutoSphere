@@ -2,6 +2,7 @@ package com.vivek.controller;
 
 import com.vivek.dto.CarRequestDTO;
 import com.vivek.dto.CarResponseDTO;
+import com.vivek.dto.PurchaseResponseDTO;
 import com.vivek.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,5 +62,9 @@ public class CarController {
     public ResponseEntity<Void> delete(@RequestParam String vinNumber){
         carService.delete(vinNumber);
         return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/car/purchase")
+    public PurchaseResponseDTO purchase(@RequestParam String vin){
+        return carService.purchaseCar(vin);
     }
 }

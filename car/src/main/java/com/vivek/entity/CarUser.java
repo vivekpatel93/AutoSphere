@@ -11,7 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Table(name = "user")
+public class CarUser {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_id_seq")
     @SequenceGenerator(name = "user_id_seq",initialValue = 2025001,allocationSize = 1)
@@ -39,7 +40,8 @@ public class User {
     private String houseNo;
 
     private String panNumber;
-
+    // for role base access
+    private String role;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Car> cars;
 }

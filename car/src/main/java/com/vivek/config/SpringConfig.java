@@ -1,5 +1,7 @@
 package com.vivek.config;
 
+import com.vivek.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SpringConfig {
-
-
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -32,12 +34,30 @@ public class SpringConfig {
         return http.csrf(csrf ->csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/car/**").permitAll()
-                        .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll()
-                .anyRequest().authenticated())
-                .userDetailsService(null)
+                        // Public — no login
+                        .requestMatchers(
+                                "/auth/**",
+                                "/car/findAll",
+                                "/car/findById",
+                                "/car/findCompany",
+                                "/car/findAllByModel",
+                                "/car/findByMilageabove20",
+                                "/car/findByColor",
+                                "/user/save"
+                        ).permitAll()
+
+                        // USER only
+                        .requestMatchers("/car/purchase/**").hasRole("USER")
+
+                        // ADMIN only
+                        .requestMatchers(
+                                "/car/save",
+                                "/car/update",
+                                "/car/delete",
+                                "/user/update"
+                        ).hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .userDetailsService(customUserDetailsService)
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
