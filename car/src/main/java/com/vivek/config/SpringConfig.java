@@ -1,7 +1,10 @@
 package com.vivek.config;
 
+import com.vivek.entity.CarUser;
+import com.vivek.repository.CarUserRepository;
 import com.vivek.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,5 +63,20 @@ public class SpringConfig {
                 .userDetailsService(customUserDetailsService)
                 .httpBasic(Customizer.withDefaults())
                 .build();
+    }
+    @Bean
+    CommandLineRunner initUsers(CarUserRepository repo,PasswordEncoder encoder){
+        return args -> {
+            if(!repo.existsByEmail("admin@gmail.com")){
+                CarUser admin=new CarUser();
+                admin.setName("Admin");
+                admin.setEmail("admin@gmail.com");
+                admin.setPassword(encoder.encode("admin@123"));
+                admin.setRole("ADMIN");
+                repo.save(admin);
+
+                System.out.println("ADMIN USER CREATED: admin@gmail.com / admin123");
+            }
+        };
     }
 }

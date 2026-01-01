@@ -15,4 +15,5 @@ public interface CarUserRepository extends JpaRepository<CarUser,Integer> {
     List<CarUser> findByPinCode(String pinCode);
     Optional<CarUser> findByEmail(String email);
 
+    boolean existsByEmail(String mail);
 }

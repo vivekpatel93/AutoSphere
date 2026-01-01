@@ -37,6 +37,7 @@ public class CarUserServiceImplementation implements CarUserService {
         user.setPinCode(dto.getPinCode());
         user.setHouseNo(dto.getHouseNo());
         user.setPanNumber(dto.getPanNumber());
+        user.setRole("USER");
         return user;
     }
 

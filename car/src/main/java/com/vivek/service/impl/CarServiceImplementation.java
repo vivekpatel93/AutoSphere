@@ -6,9 +6,11 @@ import com.vivek.dto.OwnerDTO;
 import com.vivek.dto.PurchaseResponseDTO;
 import com.vivek.entity.Car;
 import com.vivek.entity.CarUser;
+import com.vivek.entity.Purchase;
 import com.vivek.exception.ResourceNotFoundException;
 import com.vivek.repository.CarRepository;
 import com.vivek.repository.CarUserRepository;
+import com.vivek.repository.PurchaseRepository;
 import com.vivek.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -25,6 +28,8 @@ public class CarServiceImplementation implements CarService {
     private CarRepository carRepository;
     @Autowired
     private CarUserRepository carUserRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
     // convert Entity to Response DTO
     private CarResponseDTO mapToResponseDTO(Car car){
         CarResponseDTO dto=new CarResponseDTO();
@@ -168,9 +173,17 @@ public class CarServiceImplementation implements CarService {
         car.setOwner(user);
         //save
         carRepository.save(car);
+        // save purchase record
+        Purchase purchase = new Purchase();
+        purchase.setBuyer(user);
+        purchase.setCar(car);
+        purchase.setAmount(car.getPrice());
+        purchase.setPurchaseDate(LocalDateTime.now());
+
+        purchaseRepository.save(purchase);
 
         return new PurchaseResponseDTO(
-                car.getVinNumber(),"Purchase successful",user.getName(),car.getModel(),String.valueOf(car.getPrice())
+                "Purchase successful",user.getName(),car.getModel(),car.getVinNumber(),car.getPrice(),purchase.getPurchaseDate()
         );
     }
 }
