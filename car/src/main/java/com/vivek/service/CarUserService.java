@@ -1,5 +1,6 @@
 package com.vivek.service;
 
+import com.vivek.dto.ChangePasswordDTO;
 import com.vivek.dto.PurchaseResponseDTO;
 import com.vivek.dto.UserRegistrationDTO;
 import com.vivek.dto.UserResponseDTO;
@@ -18,5 +19,8 @@ public interface CarUserService {
     Page<UserResponseDTO> findAllUser(Pageable pageable);
     // find by city
     List<UserResponseDTO> findByCity(String city);
+    // change password
+    void changePassword(ChangePasswordDTO dto);
+
 
 }

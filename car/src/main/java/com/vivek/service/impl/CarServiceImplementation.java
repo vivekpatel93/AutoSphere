@@ -175,9 +175,10 @@ public class CarServiceImplementation implements CarService {
         carRepository.save(car);
         // save purchase record
         Purchase purchase = new Purchase();
+        purchase.setVin(car.getVinNumber());
         purchase.setBuyer(user);
         purchase.setCar(car);
-        purchase.setAmount(car.getPrice());
+        purchase.setPrice(car.getPrice());
         purchase.setPurchaseDate(LocalDateTime.now());
 
         purchaseRepository.save(purchase);

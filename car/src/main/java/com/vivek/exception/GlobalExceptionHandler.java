@@ -17,4 +17,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException d) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(d.getMessage());
     }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> incorrectPasswordException(IncorrectPasswordException i){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(i.getMessage());
+    }
 }

@@ -16,11 +16,16 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime purchaseDate;
-    @ManyToOne
-    private CarUser buyer;
-    @OneToOne
-    private Car car;
-    private double amount;
+    private String vin;
 
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private CarUser buyer;
+
+    @OneToOne
+    @JoinColumn(name = "car_vin")
+    private Car car;
+
+    private double price;
+    private LocalDateTime purchaseDate;
 }

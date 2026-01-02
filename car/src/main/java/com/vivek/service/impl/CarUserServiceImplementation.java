@@ -1,10 +1,11 @@
 package com.vivek.service.impl;
 
-import com.vivek.dto.PurchaseResponseDTO;
+import com.vivek.dto.ChangePasswordDTO;
 import com.vivek.dto.UserRegistrationDTO;
 import com.vivek.dto.UserResponseDTO;
 import com.vivek.entity.Car;
 import com.vivek.entity.CarUser;
+import com.vivek.exception.IncorrectPasswordException;
 import com.vivek.exception.ResourceNotFoundException;
 import com.vivek.repository.CarRepository;
 import com.vivek.repository.CarUserRepository;
@@ -68,7 +69,7 @@ public class CarUserServiceImplementation implements CarUserService {
     @Override
     public UserResponseDTO update(UserRegistrationDTO dto){
 //        CarUser user=carUserRepository.findById(id).
-//                orElseThrow(()-> new ResourceNotFoundException("User not found with this Id."));
+//                orElseThrow(()-> new ResourceNotFoundException("User not found with this id."));
 //
 //        user.setName(dto.getName());
 //        user.setEmail(dto.getEmail());
@@ -128,5 +129,21 @@ public class CarUserServiceImplementation implements CarUserService {
                 .map(this::mapToResponseDTO)
                 .toList();
     }
+    @Override
+    public void changePassword(ChangePasswordDTO dto){
+        String email=SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
+        CarUser user=carUserRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found."));
+
+        if(!passwordEncoder.matches(dto.getOldPassword(),user.getPassword())){
+            throw new IncorrectPasswordException("Old password is incorrect");
+        }
+        if (!dto.getNewPassword().matches("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}")) {
+            throw new IllegalArgumentException("Weak password");
+        }
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        carUserRepository.save(user);
+    }
 }
