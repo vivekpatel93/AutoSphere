@@ -33,5 +33,5 @@ build/
 .vscode/
 # Secrets
 *.properties
-*.yml
 *.env
+src/main/resources/application-*.yml
