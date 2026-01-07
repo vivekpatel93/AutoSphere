@@ -13,9 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-@RequestMapping("/user")
 @RestController
+@RequestMapping("/user")
+
 public class UserController {
     @Autowired
     CarUserService carUserService;
