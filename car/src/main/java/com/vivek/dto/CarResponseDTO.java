@@ -14,5 +14,6 @@ public class CarResponseDTO {
     private double price;
     private int seatCapacity;
     private float mileage;
+    private String imageUrl;
     private OwnerDTO owner;
 }

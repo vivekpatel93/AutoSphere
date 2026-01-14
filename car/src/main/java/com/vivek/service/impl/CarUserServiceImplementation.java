@@ -1,14 +1,18 @@
 package com.vivek.service.impl;
 
+import com.vivek.dto.AccountResponseDTO;
 import com.vivek.dto.ChangePasswordDTO;
 import com.vivek.dto.UserRegistrationDTO;
 import com.vivek.dto.UserResponseDTO;
+import com.vivek.entity.Account;
 import com.vivek.entity.Car;
 import com.vivek.entity.CarUser;
 import com.vivek.exception.IncorrectPasswordException;
 import com.vivek.exception.ResourceNotFoundException;
+import com.vivek.repository.AccountRepository;
 import com.vivek.repository.CarRepository;
 import com.vivek.repository.CarUserRepository;
+import com.vivek.service.AccountService;
 import com.vivek.service.CarUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +31,9 @@ public class CarUserServiceImplementation implements CarUserService {
     private CarUserRepository carUserRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AccountService accountService;
+
 
     private CarUser mapToEntity(UserRegistrationDTO dto){
         CarUser user=new CarUser();
@@ -62,7 +69,9 @@ public class CarUserServiceImplementation implements CarUserService {
 
     @Override
     public UserResponseDTO save(UserRegistrationDTO dto){
-        return mapToResponseDTO(carUserRepository.save(mapToEntity(dto)));
+        CarUser carUser=carUserRepository.save(mapToEntity(dto));
+        accountService.createAccount(carUser);
+        return mapToResponseDTO(carUser);
 
     }
 

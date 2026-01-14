@@ -42,6 +42,7 @@ public class CarServiceImplementation implements CarService {
         dto.setMileage(car.getMileage());
         dto.setSeatCapacity(car.getSeatCapacity());
         dto.setPrice(car.getPrice());
+        dto.setImageUrl(car.getImageUrl());
         if (car.getOwner() != null) {
             OwnerDTO ownerDTO = new OwnerDTO();
             ownerDTO.setUserId(car.getOwner().getUserId());
@@ -61,6 +62,7 @@ public class CarServiceImplementation implements CarService {
         car.setMileage(dto.getMileage());
         car.setSeatCapacity(dto.getSeatCapacity());
         car.setPrice(dto.getPrice());
+        car.setImageUrl(dto.getImageUrl());
         return car;
     }
 
@@ -86,7 +88,7 @@ public class CarServiceImplementation implements CarService {
         c.setPrice(dto.getPrice());
         c.setSeatCapacity(dto.getSeatCapacity());
         c.setMileage(dto.getMileage());
-
+        c.setImageUrl(dto.getImageUrl());
         // --- update relation (IMPORTANT) ---
         if (dto.getOwner() != null && dto.getOwner().getUserId() != null) {
 

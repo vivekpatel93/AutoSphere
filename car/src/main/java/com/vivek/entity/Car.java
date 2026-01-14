@@ -23,7 +23,11 @@ public class Car {
     private double price;
     private int seatCapacity;
     private float mileage;
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name="user_id")
     private CarUser owner;
+
+
 }

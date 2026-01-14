@@ -26,6 +26,10 @@ public class Purchase {
     @JoinColumn(name = "car_vin")
     private Car car;
 
+    //  One purchase → One payment
+    @OneToOne(mappedBy = "purchase")
+    private Payment payment;
+
     private double price;
     private LocalDateTime purchaseDate;
 }

@@ -22,4 +22,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> incorrectPasswordException(IncorrectPasswordException i){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(i.getMessage());
     }
+
+    @ExceptionHandler(IllegalStatementException.class)
+    public ResponseEntity<String> illegalStatementException(IllegalStatementException i){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(i.getMessage());
+    }
 }

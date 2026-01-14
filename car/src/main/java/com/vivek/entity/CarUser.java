@@ -42,6 +42,11 @@ public class CarUser {
     private String panNumber;
     // for role base access
     private String role;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Car> cars;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id")
+    private Account account;
 }

@@ -34,7 +34,7 @@ public class CarController {
     @GetMapping("/car/findAll")
     public ResponseEntity<Page<CarResponseDTO>> findAllCar(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue ="5") int size){
+            @RequestParam(defaultValue ="4") int size){
         return ResponseEntity.ok(carService.findAllCar(PageRequest.of(page,size)));
     }
 
