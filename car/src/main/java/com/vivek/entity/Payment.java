@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "payment_id_seq")
     @SequenceGenerator(name = "payment_id_seq",initialValue = 510000000,allocationSize = 1)
@@ -13,7 +14,9 @@ public class Payment {
 
     private Double amount;
     private String method;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
     private LocalDateTime paidAt;
 
     //  One payment → One purchase
