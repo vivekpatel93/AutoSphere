@@ -64,7 +64,7 @@ public class CarController {
         return ResponseEntity.noContent().build();
     }
     @PostMapping("/car/purchase")
-    public PurchaseResponseDTO purchase(@RequestParam String vin){
-        return carService.purchaseCar(vin);
+    public PurchaseResponseDTO purchase(@RequestParam String vin,@RequestParam Long accountId){
+        return carService.purchaseCar(vin,accountId);
     }
 }

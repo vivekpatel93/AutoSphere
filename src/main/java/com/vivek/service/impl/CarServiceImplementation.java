@@ -4,14 +4,18 @@ import com.vivek.dto.CarRequestDTO;
 import com.vivek.dto.CarResponseDTO;
 import com.vivek.dto.OwnerDTO;
 import com.vivek.dto.PurchaseResponseDTO;
+import com.vivek.entity.Account;
 import com.vivek.entity.Car;
 import com.vivek.entity.CarUser;
 import com.vivek.entity.Purchase;
+import com.vivek.exception.InsufficientBalanceException;
 import com.vivek.exception.ResourceNotFoundException;
+import com.vivek.repository.AccountRepository;
 import com.vivek.repository.CarRepository;
 import com.vivek.repository.CarUserRepository;
 import com.vivek.repository.PurchaseRepository;
 import com.vivek.service.CarService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +34,9 @@ public class CarServiceImplementation implements CarService {
     private CarUserRepository carUserRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+
     // convert Entity to Response DTO
     private CarResponseDTO mapToResponseDTO(Car car){
         CarResponseDTO dto=new CarResponseDTO();
@@ -157,25 +164,34 @@ public class CarServiceImplementation implements CarService {
         carRepository.delete(car);
     }
     @Override
-    public PurchaseResponseDTO purchaseCar(String vin){
-        String email= SecurityContextHolder.getContext()
+    @Transactional
+    public PurchaseResponseDTO purchaseCar(String vin,Long accountId){
+        String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
 
-        CarUser user=carUserRepository.findByEmail(email)
-                .orElseThrow(()-> new ResourceNotFoundException("User not found."));
+        CarUser user = carUserRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Car car=carRepository.findById(vin)
-                .orElseThrow(()->new ResourceNotFoundException("Car not found with this id."));
+        Car car = carRepository.findById(vin)
+                .orElseThrow(() -> new ResourceNotFoundException("Car not found"));
 
-        if(car.getOwner() != null){
-            throw new RuntimeException("Car already sold.");
+        if (car.getOwner() != null) {
+            throw new RuntimeException("Car already sold");
         }
-        // If car not sold then assign to new owner
-        car.setOwner(user);
-        //save
-        carRepository.save(car);
-        // save purchase record
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        // ✅ BALANCE CHECK
+        if (account.getBalance() < car.getPrice()) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+
+        // deduct balance
+        account.setBalance(account.getBalance() - car.getPrice());
+
+        // create purchase
         Purchase purchase = new Purchase();
         purchase.setVin(car.getVinNumber());
         purchase.setBuyer(user);
@@ -185,8 +201,24 @@ public class CarServiceImplementation implements CarService {
 
         purchaseRepository.save(purchase);
 
+        // create payment
+//        PaymentServiceImpl paymentService;
+//        paymentService.createPayment(
+//                account,
+//                purchase,
+//                car.getPrice(),
+//                "ACCOUNT"
+//        );
+
+        // assign owner
+        car.setOwner(user);
+
         return new PurchaseResponseDTO(
-                "Purchase successful",user.getName(),car.getModel(),car.getVinNumber(),car.getPrice(),purchase.getPurchaseDate()
-        );
+                "Purchase successful",
+                user.getName(),
+                car.getModel(),
+                car.getVinNumber(),
+                car.getPrice(),
+                purchase.getPurchaseDate());
     }
 }

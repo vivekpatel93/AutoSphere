@@ -21,5 +21,5 @@ public interface CarService {
     List<CarResponseDTO> findByColor(String color);
     void delete(String vinNumber);
     // purchase car
-    PurchaseResponseDTO purchaseCar(String vin);
+    PurchaseResponseDTO purchaseCar(String vin,Long accountId);
 }
