@@ -27,4 +27,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> illegalStatementException(IllegalStatementException i){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(i.getMessage());
     }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<String> insufficientBalanceException(InsufficientBalanceException i){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(i.getMessage());
+    }
 }
