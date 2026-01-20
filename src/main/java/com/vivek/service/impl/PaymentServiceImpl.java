@@ -40,6 +40,11 @@ public class PaymentServiceImpl implements PaymentService {
         return dto;
     }
 
+    private List<PaymentResponseDTO> entityToDTO(List<Payment> payments){
+        return payments.stream()
+                .map(this::entityToDTO)
+                .toList();
+    }
     @Override
     public Payment createPayment(Account account, Purchase purchase, double amount, String method){
 
@@ -76,12 +81,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .getName();
 
         CarUser carUser = carUserRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User does not exist."));
-        return paymentRepository.getAllPaymentsOfUser(carUser.getUserId());
+        Account account = carUser.getAccount();
+        return entityToDTO(paymentRepository.findAllByAccount_Id(account.getId()));
     }
 
     @Override
     public List<PaymentResponseDTO> getPaymentsByStatus(PaymentStatus status){
-        return paymentRepository.getPaymentByStatus(status);
+        return entityToDTO(paymentRepository.findAllByStatus(status));
     }
 
 

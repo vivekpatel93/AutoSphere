@@ -1,5 +1,6 @@
 package com.vivek.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -44,6 +45,7 @@ public class CarUser {
     private String role;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Car> cars;
 
     @OneToOne(cascade = CascadeType.ALL)
