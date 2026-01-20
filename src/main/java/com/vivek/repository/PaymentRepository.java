@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment,Long> {
-        List<PaymentResponseDTO> getAllPaymentsOfUser(int userId);
+        List<Payment> findAllByAccount_Id(Long accountId);
 
-        List<PaymentResponseDTO> getPaymentByStatus(PaymentStatus status);
+        List<Payment> findAllByStatus(PaymentStatus status);
 
 
 }
