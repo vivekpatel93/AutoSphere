@@ -16,12 +16,23 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
+
 
 @Configuration
 @EnableWebSecurity
 public class SpringConfig {
+
+    private final CustomUserDetailsService customUserDetailsService;
+    private final CorsConfigurationSource corsConfigurationSource;
+
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    public SpringConfig(CustomUserDetailsService customUserDetailsService,
+                        CorsConfigurationSource corsConfigurationSource){
+        this.customUserDetailsService=customUserDetailsService;
+        this.corsConfigurationSource=corsConfigurationSource;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -35,6 +46,7 @@ public class SpringConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf ->csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public — no login
@@ -57,7 +69,8 @@ public class SpringConfig {
                                 "/car/save",
                                 "/car/update",
                                 "/car/delete",
-                                "/user/update"
+                                "/user/update",
+                                "/admin/**"
                         ).hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .userDetailsService(customUserDetailsService)
@@ -79,4 +92,6 @@ public class SpringConfig {
             }
         };
     }
+
+
 }
