@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private CarUserRepository carUserRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email){
         // here our email treated as username

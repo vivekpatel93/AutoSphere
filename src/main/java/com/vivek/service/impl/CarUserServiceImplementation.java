@@ -1,16 +1,12 @@
 package com.vivek.service.impl;
 
-import com.vivek.dto.AccountResponseDTO;
+
 import com.vivek.dto.ChangePasswordDTO;
 import com.vivek.dto.UserRegistrationDTO;
 import com.vivek.dto.UserResponseDTO;
-import com.vivek.entity.Account;
-import com.vivek.entity.Car;
 import com.vivek.entity.CarUser;
 import com.vivek.exception.IncorrectPasswordException;
 import com.vivek.exception.ResourceNotFoundException;
-import com.vivek.repository.AccountRepository;
-import com.vivek.repository.CarRepository;
 import com.vivek.repository.CarUserRepository;
 import com.vivek.service.AccountService;
 import com.vivek.service.CarUserService;
@@ -25,16 +21,19 @@ import java.util.List;
 
 @Service
 public class CarUserServiceImplementation implements CarUserService {
-    @Autowired
-    private CarRepository carRepository;
-    @Autowired
-    private CarUserRepository carUserRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AccountService accountService;
 
+    private final CarUserRepository carUserRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final AccountService accountService;
+
+    @Autowired
+    public CarUserServiceImplementation(CarUserRepository carUserRepository,PasswordEncoder passwordEncoder, AccountService accountService){
+        this.carUserRepository=carUserRepository;
+        this.passwordEncoder=passwordEncoder;
+        this.accountService=accountService;
+    }
     private CarUser mapToEntity(UserRegistrationDTO dto){
         CarUser user=new CarUser();
         user.setName(dto.getName());
